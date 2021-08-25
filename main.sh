@@ -17,24 +17,8 @@ stars=$(printf "%-30s" "*")
 export RTBOT_WORKSPACE="/home/rtbot/github-workspace"
 hosts_file="$GITHUB_WORKSPACE/.github/hosts.yml"
 
-# Keep vendor bin if exist
-mkdir -p /home/rtbot/vendor
-cp -avf $GITHUB_WORKSPACE/vendor/bin /home/rtbot/vendor
-
-# Delete all the folders to be skipped to ignore them from being scanned.
-if [[ -n "$SKIP_FOLDERS" ]]; then
-
-  folders=(${SKIP_FOLDERS//,/ })
-
-  for folder in ${folders[@]}; do
-    path_of_folder="$GITHUB_WORKSPACE/$folder"
-    [[ -d "$path_of_folder" ]] && rm -rf $path_of_folder
-  done
-fi
-
 rsync -a "$GITHUB_WORKSPACE/" "$RTBOT_WORKSPACE"
 rsync -a /root/vip-go-ci-tools/ /home/rtbot/vip-go-ci-tools
-cp -avf /home/rtbot/vendor $RTBOT_WORKSPACE
 chown -R rtbot:rtbot /home/rtbot/
 
 GITHUB_REPO_NAME=${GITHUB_REPOSITORY##*/}
@@ -77,17 +61,14 @@ if [[ -n "$PHPCS_STANDARD_FILE_NAME" ]] && [[ -f "$RTBOT_WORKSPACE/$PHPCS_STANDA
   phpcs_standard="--phpcs-standard=$RTBOT_WORKSPACE/$PHPCS_STANDARD_FILE_NAME"
 fi;
 
-if [[ -n "$PHPCS_FILE_PATH" ]] && [[ -f "$RTBOT_WORKSPACE/$PHPCS_FILE_PATH" ]]; then
-  phpcs_file_path="--phpcs-path='$RTBOT_WORKSPACE/$PHPCS_FILE_PATH'"
-else
-  phpcs_file_path="--phpcs-path='/home/rtbot/vip-go-ci-tools/phpcs/bin/phpcs'"
-fi
+# We always want to use our phpcs
+phpcs_file_path="--phpcs-path='$RTBOT_WORKSPACE/$PHPCS_FILE_PATH'"
 
 [[ -z "$PHPCS_SNIFFS_EXCLUDE" ]] && phpcs_sniffs_exclude='' || phpcs_sniffs_exclude="--phpcs-sniffs-exclude='$PHPCS_SNIFFS_EXCLUDE'"
 
-[[ -z "$SKIP_FOLDERS" ]] && skip_folders_option='' || skip_folders_option="--skip-folders='$SKIP_FOLDERS'"
+[[ -z "$SKIP_FOLDERS" ]] && skip_folders_option='' || skip_folders_option="--lint-skip-folders='$SKIP_FOLDERS'"
 
-/usr/games/cowsay "Running with the flag $phpcs_standard"
+/usr/games/cowsay "Running with the flag $phpcs_standard $phpcs_file_path"
 
 php_lint_option='--lint=true'
 if [[ "$(echo "$PHP_LINT" | tr '[:upper:]' '[:lower:]')" = 'false' ]]; then
