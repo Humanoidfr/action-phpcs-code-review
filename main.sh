@@ -18,8 +18,8 @@ export RTBOT_WORKSPACE="/home/rtbot/github-workspace"
 hosts_file="$GITHUB_WORKSPACE/.github/hosts.yml"
 
 # Keep vendor bin if exist
-mkdir -p $RTBOT_WORKSPACE/vendor/bin
-cp -avf $GITHUB_WORKSPACE/vendor/bin $RTBOT_WORKSPACE/vendor/bin
+mkdir -p $RTBOT_WORKSPACE/vendor
+cp -avf $GITHUB_WORKSPACE/vendor/bin $RTBOT_WORKSPACE/vendor
 
 # Delete all the folders to be skipped to ignore them from being scanned.
 if [[ -n "$SKIP_FOLDERS" ]]; then
