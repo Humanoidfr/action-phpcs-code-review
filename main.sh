@@ -18,8 +18,8 @@ export RTBOT_WORKSPACE="/home/rtbot/github-workspace"
 hosts_file="$GITHUB_WORKSPACE/.github/hosts.yml"
 
 # Keep vendor bin if exist
-mkdir -p $RTBOT_WORKSPACE/vendor
-cp -avf $GITHUB_WORKSPACE/vendor/bin $RTBOT_WORKSPACE/vendor
+mkdir -p /home/rtbot/vendor
+cp -avf $GITHUB_WORKSPACE/vendor/bin /home/rtbot/vendor
 
 # Delete all the folders to be skipped to ignore them from being scanned.
 if [[ -n "$SKIP_FOLDERS" ]]; then
@@ -34,6 +34,7 @@ fi
 
 rsync -a "$GITHUB_WORKSPACE/" "$RTBOT_WORKSPACE"
 rsync -a /root/vip-go-ci-tools/ /home/rtbot/vip-go-ci-tools
+cp -avf /home/rtbot/vendor $RTBOT_WORKSPACE
 chown -R rtbot:rtbot /home/rtbot/
 
 GITHUB_REPO_NAME=${GITHUB_REPOSITORY##*/}
