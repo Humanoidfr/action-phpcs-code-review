@@ -3,7 +3,7 @@ description: 'This will run phpcs on PRs'
 author: 'rtCamp'
 runs:
   using: 'docker'
-  image: 'alexays/humanoid-phpcs'
+  image: 'docker://alexays/humanoid-phpcs'
 branding:
   icon: 'check-circle'
   color: 'green'
