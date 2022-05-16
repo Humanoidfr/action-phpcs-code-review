@@ -36,6 +36,7 @@ RUN set -eux; \
 	vim \
 	zip \
 	unzip \
+	nodejs \
 	wget ; \
 	pip install shyaml; \
 	rm -rf /var/lib/apt/lists/*; \
